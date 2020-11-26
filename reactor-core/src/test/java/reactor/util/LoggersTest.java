@@ -16,10 +16,12 @@
 
 package reactor.util;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("changesLoggerFactory")
 public class LoggersTest {
 
 	@Test

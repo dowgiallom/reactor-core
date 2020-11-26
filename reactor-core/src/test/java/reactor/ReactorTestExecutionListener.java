@@ -18,6 +18,7 @@ package reactor;
 
 import org.assertj.core.presentation.Representation;
 import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.TestTag;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.TestPlan;
@@ -27,6 +28,7 @@ import reactor.core.scheduler.Schedulers;
 import reactor.test.AssertionsUtils;
 import reactor.test.util.LoggerUtils;
 import reactor.util.Logger;
+import reactor.util.Loggers;
 
 /**
  * A custom TestExecutionListener that helps with tests in reactor:<ul>
@@ -61,11 +63,19 @@ public class ReactorTestExecutionListener implements TestExecutionListener {
 	@Override
 	public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
 		resetHooksAndSchedulers();
+		if (testIdentifier.getTags().contains(TestTag.create("changesLoggerFactory"))) {
+			resetLoggerFactory();
+		}
 	}
 
 	@Override
 	public void testPlanExecutionStarted(TestPlan testPlan) {
 		AssertionsUtils.installAssertJTestRepresentation();
+		resetLoggerFactory();
+	}
+
+	static void resetLoggerFactory() {
+		Loggers.resetLoggerFactory();
 		LoggerUtils.useCurrentLoggersWithCapture();
 	}
 }
